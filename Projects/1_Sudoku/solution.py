@@ -8,7 +8,22 @@ square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','45
 unitlist = row_units + column_units + square_units
 
 # TODO: Update the unit list to add the new diagonal units
-unitlist = unitlist
+
+# To create our "Diagonal_Units" we will need to create an applicable 
+# size array of elements. To do this we will add togehter the 
+# Value of the UnitsList to its corresponding Key which in turn
+# will create a specific value for each sqaure on our Sudoku board.
+
+# The purpose of zip() is to map the similar index of multiple containers so that 
+# they can be used just using as single entity.
+
+
+Diagonal_Units  = (
+    [[val+key for val, key in zip(rows, cols)]] + 
+    [[val+key for val, key in zip(rows, cols[::-1])]]
+)
+
+unitlist = unitlist + Diagonal_Units
 
 
 # Must be called after all units (including diagonals) are added to the unitlist
@@ -54,7 +69,32 @@ def naked_twins(values):
     https://github.com/udacity/artificial-intelligence/blob/master/Projects/1_Sudoku/pseudocode.md
     """
     # TODO: Implement this function!
-    raise NotImplementedError
+    
+    # In order for us to do this we will need to loop through each unit in 
+    # the list. Next, we will have to create an unallocated box for each unit. 
+    # If the box has two values the same as any other unit but isn't the same 
+    # unit it a twin. 
+    
+    Unallocated_Boxes = [Box for Box in values if len(values[Box]) == 2]
+    
+    Naked_Twins = [ (Box_1, Box_2)
+                     for Box_1 in Unallocated_Boxes
+                     for Box_2 in peers[Box_1]
+                     if sorted(values[Box_1]) == sorted(values(Box_2])
+                     ]
+    
+    # However, now we must ensure that we have found a twin. To do this 
+    # we will need to check if the values of the twin box actually contains
+    # twin numbers. If so, then we need to remove them from the box. 
+    
+    for Twins in Naked_Twins:
+        Peer_Boxes = set(peers[twins[0]]).intersection(peers[[1]]) 
+        
+        for peer in Peer_Boxes:
+            for Current_Value in values[Twins[0]]:
+                values[peer] = values[peer].replace(Current_Value. '')
+            
+    return values
 
 
 def eliminate(values):
